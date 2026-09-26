@@ -5,7 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/saffron-house-digital-menu/',
+    base: './',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
