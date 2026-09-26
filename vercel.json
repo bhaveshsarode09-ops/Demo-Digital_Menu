@@ -1,7 +1,7 @@
 {
   "framework": "vite",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "echo 'Using prebuilt GitHub Pages bundle'",
+  "outputDirectory": ".",
   "rewrites": [
     {
       "source": "/(.*)",
