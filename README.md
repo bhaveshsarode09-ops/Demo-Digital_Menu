@@ -7,6 +7,8 @@ A mobile-first, high-end digital restaurant menu experience designed with the vi
 ## ✦ Key Features
 
 - **2.5D Product Launch Showcase**: Interactive 2.5D mouse-follow depth perspective, layered ambient shadows, floating spec chips, and smooth mobile float animation.
+- **Instagram Follower 10% Discount System**: Prompts guests to follow the restaurant's official Instagram page while ordering. Once followed, automatically deducts 10% from the bill, records their handle for kitchen cross-check, and includes the discount in the final WhatsApp order slip.
+- **Exit-Intent Google Review Prompt**: Detects desktop exit intent (mouse leaving window top) or mobile back navigation, gracefully presenting a 5-star rating dialog and direct link to write a Google Review.
 - **Direct WhatsApp Ordering**: Fully formatted digital order slip with itemized dishes, quantities, table number/takeaway selection, and total calculations sent directly to WhatsApp without requiring user login or account creation.
 - **Editorial Chef's Selection**: Curated best-sellers with quotes from the Executive Culinary Director and high-contrast photography.
 - **Categorized Digital Catalog**: Signature Dishes, Starters, Mains, Biryani & Rice, Breads, Desserts, and Beverages with instant live search and dietary filters (Vegetarian, Gluten-Free, Signatures).

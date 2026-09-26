@@ -11,11 +11,12 @@ import { ChefsSelection } from './components/ChefsSelection';
 import { MenuSection } from './components/MenuSection';
 import { DishDetailModal } from './components/DishDetailModal';
 import { CartDrawer } from './components/CartDrawer';
+import { GoogleReviewModal } from './components/GoogleReviewModal';
 import { RestaurantInfoSection } from './components/RestaurantInfo';
 import { Footer } from './components/Footer';
 import { menuItems, restaurantInfo } from './data/menuData';
 import { MenuItem, CartItem } from './types';
-import { Check, ShoppingBag } from 'lucide-react';
+import { Check, Instagram, Sparkles, Star } from 'lucide-react';
 
 export default function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -24,6 +25,46 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [inspectDish, setInspectDish] = useState<MenuItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Instagram 10% discount state
+  const [isInstagramFollower, setIsInstagramFollower] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('sh_insta_discount') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const [instagramHandle, setInstagramHandle] = useState<string>(() => {
+    try {
+      return localStorage.getItem('sh_insta_handle') || '1210.bhavesh';
+    } catch {
+      return '1210.bhavesh';
+    }
+  });
+
+  // Google review modal state
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
+  // Sync Instagram discount to storage
+  const handleToggleInstagramFollower = (val: boolean) => {
+    setIsInstagramFollower(val);
+    try {
+      localStorage.setItem('sh_insta_discount', val ? 'true' : 'false');
+    } catch {}
+    if (val) {
+      triggerToast('🎉 10% Instagram Follower Privilege Applied!');
+    } else {
+      triggerToast('Instagram discount removed');
+    }
+  };
+
+  const handleUpdateInstagramHandle = (handle: string) => {
+    setInstagramHandle(handle);
+    try {
+      localStorage.setItem('sh_insta_handle', handle);
+    } catch {}
+  };
 
   // Cart total count
   const cartCount = useMemo(() => {
@@ -38,7 +79,7 @@ export default function App() {
   // Show toast notification
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 2400);
+    setTimeout(() => setToastMessage(null), 2600);
   };
 
   // Add to cart handler
@@ -56,7 +97,7 @@ export default function App() {
       }
       return [...prevCart, { dish, quantity, instructions }];
     });
-    triggerToast(`Added ${quantity > 1 ? `${quantity}x ` : ''}${dish.name} to order`);
+    triggerToast(`Added ${quantity > 1 ? `${quantity}x ` : ''}${dish.name} to bag`);
   };
 
   // Update quantity in cart
@@ -89,10 +130,28 @@ export default function App() {
   };
 
   // Quick Direct WhatsApp order for a single dish from modal
-  const handleOrderDirectWhatsApp = (dish: MenuItem, quantity: number, instructions?: string) => {
-    const total = (dish.price * quantity).toFixed(2);
+  const handleOrderDirectWhatsApp = (
+    dish: MenuItem,
+    quantity: number,
+    instructions?: string,
+    isDiscounted: boolean = false,
+    handle?: string
+  ) => {
+    const rawTotal = dish.price * quantity;
+    const discount = isDiscounted ? rawTotal * 0.10 : 0;
+    const payable = rawTotal - discount;
+
     let msg = `*INSTANT ORDER — ${restaurantInfo.name.toUpperCase()}*\n`;
-    msg += `Dish: ${quantity}x ${dish.name} (${restaurantInfo.currencySymbol}${total})\n`;
+    msg += `Dish: ${quantity}x ${dish.name} (${restaurantInfo.currencySymbol}${rawTotal.toFixed(2)})\n`;
+
+    if (isDiscounted) {
+      msg += `*Instagram Privilege (10% OFF):* -${restaurantInfo.currencySymbol}${discount.toFixed(2)}\n`;
+      if (handle?.trim()) {
+        msg += `*Instagram Handle:* ${handle.startsWith('@') ? handle : `@${handle}`}\n`;
+      }
+      msg += `*Total Payable:* ${restaurantInfo.currencySymbol}${payable.toFixed(2)}\n`;
+    }
+
     if (instructions?.trim()) {
       msg += `Note: ${instructions.trim()}\n`;
     }
@@ -125,6 +184,18 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0A0C0F] text-[#F6F2E9] selection:bg-[#E26421] selection:text-white">
+      {/* Discreet VIP Promotion Ribbon */}
+      <div className="bg-gradient-to-r from-[#17130F] via-[#231A13] to-[#17130F] border-b border-[#C29E65]/30 py-1.5 px-4 text-center text-[11px] text-[#D8B781] flex items-center justify-center gap-2">
+        <Sparkles className="w-3 h-3 text-[#E26421]" />
+        <span>Follow <strong className="text-white">{restaurantInfo.instagramHandle}</strong> on Instagram for <strong>10% off</strong> your meal order.</span>
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className="ml-1 underline text-white hover:text-[#E26421] font-semibold cursor-pointer"
+        >
+          {isInstagramFollower ? '✓ Applied' : 'Claim Now'}
+        </button>
+      </div>
+
       {/* Sticky Header with 3-Zone Contract */}
       <Header
         cartCount={cartCount}
@@ -134,6 +205,8 @@ export default function App() {
           setSelectedCategory(catId);
           handleExploreMenu();
         }}
+        onOpenReviewModal={() => setIsReviewModalOpen(true)}
+        isInstagramFollower={isInstagramFollower}
       />
 
       <main>
@@ -190,6 +263,10 @@ export default function App() {
         onClose={() => setInspectDish(null)}
         onAddToCart={handleAddToCart}
         onOrderDirectWhatsApp={handleOrderDirectWhatsApp}
+        isInstagramFollower={isInstagramFollower}
+        onToggleInstagramFollower={handleToggleInstagramFollower}
+        instagramHandle={instagramHandle}
+        onUpdateInstagramHandle={handleUpdateInstagramHandle}
       />
 
       {/* Slide-over Cart & WhatsApp Checkout Drawer */}
@@ -200,11 +277,28 @@ export default function App() {
         onUpdateQuantity={handleUpdateCartQuantity}
         onRemoveItem={handleRemoveFromCart}
         onClearCart={handleClearCart}
+        isInstagramFollower={isInstagramFollower}
+        onToggleInstagramFollower={handleToggleInstagramFollower}
+        instagramHandle={instagramHandle}
+        onUpdateInstagramHandle={handleUpdateInstagramHandle}
+        onRedirectToMenu={handleExploreMenu}
+        onOrderCompleted={() => {
+          // After 2.5s, invite to leave a review
+          setTimeout(() => {
+            setIsReviewModalOpen(true);
+          }, 2500);
+        }}
+      />
+
+      {/* Google Review Exit-Intent & Feedback Modal */}
+      <GoogleReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
       />
 
       {/* Temporary Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-20 lg:bottom-8 right-4 sm:right-8 z-50 bg-[#12151B] border border-[#C29E65]/50 text-[#F6F2E9] px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-[slideUp_0.2s_ease-out] backdrop-blur-md">
+        <div className="fixed bottom-20 lg:bottom-8 right-4 sm:right-8 z-50 bg-[#12151B] border border-[#C29E65]/50 text-[#F6F2E9] px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-[slideUp_0.2s_ease-out]">
           <span className="w-6 h-6 rounded-full bg-[#E26421] text-white flex items-center justify-center shrink-0">
             <Check className="w-3.5 h-3.5" />
           </span>

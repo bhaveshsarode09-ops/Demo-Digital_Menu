@@ -70,7 +70,7 @@ export const ChefsSelection: React.FC<ChefsSelectionProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
                     {/* Price Tag overlay */}
-                    <div className="absolute bottom-3 right-3 bg-[#0A0C0F]/90 backdrop-blur-md px-3 py-1 rounded border border-[#232934] text-xs font-semibold tabular-nums text-[#F6F2E9]">
+                    <div className="absolute bottom-3 right-3 bg-[#0A0C0F] px-3 py-1 rounded border border-[#232934] text-xs font-semibold tabular-nums text-[#F6F2E9] shadow-md">
                       {restaurantInfo.currencySymbol}{dish.price.toFixed(2)}
                     </div>
                   </div>

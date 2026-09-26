@@ -79,9 +79,9 @@ export const Showcase3D: React.FC<Showcase3DProps> = ({
     <section id="showcase-3d" className="relative py-20 lg:py-28 bg-[#0E1116] border-t border-b border-[#1C212B] overflow-hidden">
       {/* Background radial gradient spotlight */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] lg:w-[800px] h-[500px] lg:h-[800px] rounded-full blur-[140px] pointer-events-none transition-colors duration-700"
+        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
         style={{
-          backgroundColor: currentDish.accentHue ? `${currentDish.accentHue}12` : 'rgba(226, 100, 33, 0.08)'
+          background: `radial-gradient(circle at 50% 50%, ${currentDish.accentHue ? `${currentDish.accentHue}18` : 'rgba(226, 100, 33, 0.1)'} 0%, transparent 70%)`
         }}
       />
 
@@ -128,22 +128,23 @@ export const Showcase3D: React.FC<Showcase3DProps> = ({
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="relative perspective-1500 py-6 sm:py-10"
+          className="relative py-6 sm:py-10"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
             {/* Visual Stage (Dish in 2.5D Perspective) */}
             <div className="lg:col-span-7 flex items-center justify-center order-1 lg:order-1 relative">
               <div
-                className="relative w-full max-w-[380px] sm:max-w-[480px] aspect-square flex items-center justify-center transition-transform duration-200 ease-out preserve-3d"
+                className="relative w-full max-w-[380px] sm:max-w-[480px] aspect-square flex items-center justify-center transition-transform duration-200 ease-out"
                 style={{
-                  transform: `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) scale(${tilt.scale})`
+                  transform: `perspective(1000px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) scale(${tilt.scale})`,
+                  willChange: 'transform'
                 }}
               >
                 {/* Dynamic multi-layered soft drop shadow under dish */}
                 <div
-                  className="absolute bottom-6 w-3/4 h-12 bg-black/70 blur-2xl rounded-full pointer-events-none transition-transform duration-200"
+                  className="absolute bottom-4 w-3/4 h-12 bg-black/80 blur-xl rounded-full pointer-events-none transition-transform duration-200"
                   style={{
-                    transform: `translate3d(${-tilt.rotateY * 3}px, ${tilt.rotateX * 2 + 10}px, -20px) scale(${1 + Math.abs(tilt.rotateX) * 0.02})`
+                    transform: `translate(${-tilt.rotateY * 2}px, ${tilt.rotateX * 1.5 + 8}px)`
                   }}
                 />
 
@@ -162,17 +163,15 @@ export const Showcase3D: React.FC<Showcase3DProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/5 pointer-events-none" />
                   </div>
 
-                  {/* Soft reflection beneath */}
-                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-4/5 h-16 opacity-20 blur-md pointer-events-none overflow-hidden scale-y-[-0.6] mask-[linear-gradient(to_bottom,white,transparent)]">
-                    <img src={currentDish.image} alt="" className="w-full h-full object-cover" />
-                  </div>
+                  {/* Soft reflection shadow beneath */}
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-[#C29E65]/15 blur-lg rounded-full pointer-events-none" />
                 </div>
 
                 {/* Floating Spec Card 1 (Top Left) */}
                 <div
-                  className="absolute -top-4 left-0 sm:left-4 z-30 bg-[#12151B]/95 border border-[#232934] backdrop-blur-md px-3.5 py-2.5 rounded-lg shadow-xl text-left pointer-events-none transition-transform duration-300"
+                  className="absolute -top-4 left-0 sm:left-4 z-30 bg-[#12151B] border border-[#232934] px-3.5 py-2.5 rounded-lg shadow-2xl text-left pointer-events-none transition-transform duration-300"
                   style={{
-                    transform: `translate3d(${tilt.rotateY * 1.8}px, ${-tilt.rotateX * 1.8}px, 40px)`
+                    transform: `translate(${tilt.rotateY * 1.2}px, ${-tilt.rotateX * 1.2}px)`
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-wider text-[#C29E65] font-semibold flex items-center gap-1.5">
@@ -184,9 +183,9 @@ export const Showcase3D: React.FC<Showcase3DProps> = ({
 
                 {/* Floating Spec Card 2 (Bottom Right) */}
                 <div
-                  className="absolute -bottom-4 right-0 sm:right-4 z-30 bg-[#12151B]/95 border border-[#232934] backdrop-blur-md px-3.5 py-2.5 rounded-lg shadow-xl text-left pointer-events-none transition-transform duration-300"
+                  className="absolute -bottom-4 right-0 sm:right-4 z-30 bg-[#12151B] border border-[#232934] px-3.5 py-2.5 rounded-lg shadow-2xl text-left pointer-events-none transition-transform duration-300"
                   style={{
-                    transform: `translate3d(${-tilt.rotateY * 1.8}px, ${tilt.rotateX * 1.8}px, 40px)`
+                    transform: `translate(${-tilt.rotateY * 1.2}px, ${tilt.rotateX * 1.2}px)`
                   }}
                 >
                   <p className="text-[10px] uppercase tracking-wider text-[#8A95A5] font-semibold">

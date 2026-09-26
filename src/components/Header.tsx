@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, MessageSquare, Menu as MenuIcon, X } from 'lucide-react';
+import { Search, ShoppingBag, MessageSquare, Menu as MenuIcon, X, Star, Instagram } from 'lucide-react';
 import { restaurantInfo } from '../data/menuData';
 
 interface HeaderProps {
@@ -7,13 +7,17 @@ interface HeaderProps {
   onOpenCart: () => void;
   onOpenSearch: () => void;
   onSelectCategory: (categoryId: string) => void;
+  onOpenReviewModal: () => void;
+  isInstagramFollower?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   cartCount,
   onOpenCart,
   onOpenSearch,
-  onSelectCategory
+  onSelectCategory,
+  onOpenReviewModal,
+  isInstagramFollower
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -58,8 +62,8 @@ export const Header: React.FC<HeaderProps> = ({
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-[#0A0C0F]/90 backdrop-blur-md border-b border-[#232934]/60 py-3 shadow-2xl'
-            : 'bg-gradient-to-b from-[#0A0C0F]/80 via-[#0A0C0F]/40 to-transparent py-5'
+            ? 'bg-[#0A0C0F] border-b border-[#232934] py-3 shadow-2xl'
+            : 'bg-gradient-to-b from-[#0A0C0F] via-[#0A0C0F]/90 to-transparent py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -78,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
 
           {/* Zone 2: 4-6 clean text navigation links */}
-          <nav className="hidden lg:flex items-center gap-8 text-xs uppercase tracking-[0.2em] font-medium text-[#A8B2C1]">
+          <nav className="hidden lg:flex items-center gap-7 text-xs uppercase tracking-[0.2em] font-medium text-[#A8B2C1]">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -93,6 +97,16 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Zone 3: Primary interactive controls */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Google Review Shortcut Button */}
+            <button
+              onClick={onOpenReviewModal}
+              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-[#C29E65] hover:text-[#F6F2E9] hover:bg-[#171B22] border border-[#C29E65]/30 rounded-md transition-colors whitespace-nowrap cursor-pointer"
+              title="Leave a Google Review"
+            >
+              <Star className="w-3.5 h-3.5 text-[#C29E65] fill-[#C29E65]" />
+              <span className="text-[11px] uppercase tracking-wider">Review</span>
+            </button>
+
             {/* Search Trigger */}
             <button
               onClick={onOpenSearch}
@@ -154,8 +168,36 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               ))}
             </div>
+
+            {/* Privilege & Review banner */}
+            <div className="mb-4 p-3 rounded-lg bg-[#14171D] border border-[#232934] flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs">
+                <Instagram className="w-4 h-4 text-[#E1306C]" />
+                <span className="text-[#F6F2E9]">Follow for 10% Off</span>
+              </div>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCart();
+                }}
+                className="text-[11px] font-semibold text-[#E26421] underline"
+              >
+                Claim in Bag
+              </button>
+            </div>
+
             <div className="pt-3 border-t border-[#1A1E26] flex items-center justify-between text-xs text-[#8A95A5]">
-              <span>{restaurantInfo.location}</span>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenReviewModal();
+                }}
+                className="flex items-center gap-1.5 text-[#C29E65] hover:text-[#F6F2E9]"
+              >
+                <Star className="w-3.5 h-3.5 fill-[#C29E65]" />
+                <span>Write Google Review</span>
+              </button>
+
               <button
                 onClick={handleWhatsAppDirect}
                 className="text-[#25D366] hover:underline flex items-center gap-1.5 cursor-pointer"
@@ -169,7 +211,7 @@ export const Header: React.FC<HeaderProps> = ({
       </header>
 
       {/* Mobile Bottom Quick Sticky Navigation Bar (under 15% mobile viewport cap) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0A0C0F]/95 backdrop-blur-md border-t border-[#232934] px-4 py-2.5 flex items-center justify-between">
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-[#0A0C0F] border-t border-[#232934] px-4 py-2.5 flex items-center justify-between shadow-2xl">
         <button
           onClick={() => {
             const el = document.getElementById('menu-catalog');
@@ -190,11 +232,11 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         <button
-          onClick={handleWhatsAppDirect}
-          className="flex flex-col items-center gap-1 text-[11px] text-[#A8B2C1] hover:text-[#25D366] cursor-pointer"
+          onClick={onOpenReviewModal}
+          className="flex flex-col items-center gap-1 text-[11px] text-[#C29E65] hover:text-white cursor-pointer"
         >
-          <MessageSquare className="w-4 h-4 text-[#25D366]" />
-          <span>WhatsApp</span>
+          <Star className="w-4 h-4 fill-[#C29E65]" />
+          <span>Review</span>
         </button>
 
         <button

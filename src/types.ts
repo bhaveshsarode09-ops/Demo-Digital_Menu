@@ -38,6 +38,7 @@ export interface RestaurantInfo {
   location: string;
   fullAddress: string;
   googleMapsUrl: string;
+  googleReviewUrl: string;
   phone: string;
   displayPhone: string;
   whatsappNumber: string;

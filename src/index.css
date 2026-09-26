@@ -7,11 +7,17 @@
 }
 
 @layer base {
-  body {
+  html {
+    color-scheme: dark;
+  }
+
+  html, body {
     font-family: var(--font-sans);
     background-color: #0A0C0F;
     color: #F6F2E9;
-    overflow-x: hidden;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, .font-serif, .font-display {
@@ -26,16 +32,4 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-.perspective-1500 {
-  perspective: 1500px;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d;
 }

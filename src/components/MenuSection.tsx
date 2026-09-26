@@ -72,7 +72,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
         </div>
 
         {/* Category Horizontal Navigation Rail */}
-        <div className="sticky top-[60px] sm:top-[70px] z-30 bg-[#0D0F13]/95 backdrop-blur-md py-4 border-b border-[#1C212B] mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="sticky top-[60px] sm:top-[70px] z-30 bg-[#0D0F13] py-4 border-b border-[#1C212B] mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 shadow-lg">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {menuCategories.map((cat) => {
               const isActive = selectedCategory === cat.id;
@@ -183,7 +183,7 @@ export const MenuSection: React.FC<MenuSectionProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-[#12151B] via-transparent to-transparent pointer-events-none" />
 
                     {/* Dietary indicator dot at top-left */}
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#0A0C0F]/90 backdrop-blur-md px-2 py-1 rounded text-[11px] font-medium border border-[#1C212B]">
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-[#0A0C0F] px-2 py-1 rounded text-[11px] font-medium border border-[#1C212B] shadow-sm">
                       {dish.isVegetarian ? (
                         <>
                           <span className="w-2 h-2 rounded-full bg-emerald-400" />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Plus, Minus, MessageSquare, ShoppingBag, Flame, Sparkles, AlertCircle, Check } from 'lucide-react';
+import { X, Plus, Minus, MessageSquare, ShoppingBag, Flame, Sparkles, AlertCircle, Check, Instagram, ArrowRight } from 'lucide-react';
 import { MenuItem } from '../types';
 import { restaurantInfo } from '../data/menuData';
 
@@ -7,14 +7,22 @@ interface DishDetailModalProps {
   dish: MenuItem | null;
   onClose: () => void;
   onAddToCart: (dish: MenuItem, quantity: number, instructions?: string) => void;
-  onOrderDirectWhatsApp: (dish: MenuItem, quantity: number, instructions?: string) => void;
+  onOrderDirectWhatsApp: (dish: MenuItem, quantity: number, instructions?: string, isDiscounted?: boolean, handle?: string) => void;
+  isInstagramFollower: boolean;
+  onToggleInstagramFollower: (val: boolean) => void;
+  instagramHandle: string;
+  onUpdateInstagramHandle: (handle: string) => void;
 }
 
 export const DishDetailModal: React.FC<DishDetailModalProps> = ({
   dish,
   onClose,
   onAddToCart,
-  onOrderDirectWhatsApp
+  onOrderDirectWhatsApp,
+  isInstagramFollower,
+  onToggleInstagramFollower,
+  instagramHandle,
+  onUpdateInstagramHandle
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [instructions, setInstructions] = useState('');
@@ -22,7 +30,9 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
 
   if (!dish) return null;
 
-  const totalPrice = dish.price * quantity;
+  const rawPrice = dish.price * quantity;
+  const discount = isInstagramFollower ? rawPrice * 0.10 : 0;
+  const payablePrice = rawPrice - discount;
 
   const handleAdd = () => {
     onAddToCart(dish, quantity, instructions);
@@ -34,11 +44,11 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
   };
 
   const handleDirectWhatsApp = () => {
-    onOrderDirectWhatsApp(dish, quantity, instructions);
+    onOrderDirectWhatsApp(dish, quantity, instructions, isInstagramFollower, instagramHandle);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-[fadeIn_0.2s_ease-out]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/85 animate-[fadeIn_0.2s_ease-out]">
       {/* Click backdrop to close */}
       <div className="fixed inset-0" onClick={onClose} />
 
@@ -72,7 +82,7 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
                   {dish.floatingSpecs.slice(0, 3).map((spec, i) => (
                     <span
                       key={i}
-                      className="px-2 py-0.5 bg-[#12151B]/90 backdrop-blur-md border border-[#232934] text-[10px] uppercase tracking-wider text-[#C29E65] rounded"
+                      className="px-2 py-0.5 bg-[#12151B] border border-[#232934] text-[10px] uppercase tracking-wider text-[#C29E65] rounded shadow-md"
                     >
                       {spec}
                     </span>
@@ -156,6 +166,55 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
                   </div>
                 </div>
 
+                {/* Instagram 10% Discount Banner in Modal */}
+                <div className="p-3 rounded-lg bg-[#14171D] border border-[#C29E65]/30 text-xs mb-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#FD1D1D] via-[#E1306C] to-[#833AB4] flex items-center justify-center text-white shrink-0">
+                        <Instagram className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <p className="text-[#F6F2E9] font-medium leading-none">
+                          Follow {restaurantInfo.instagramHandle}
+                        </p>
+                        <p className="text-[10px] text-[#A8B2C1] mt-0.5">
+                          Unlocks 10% discount on this dish
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!isInstagramFollower) {
+                          window.open(restaurantInfo.instagramUrl, '_blank', 'noopener,noreferrer');
+                          onToggleInstagramFollower(true);
+                          if (!instagramHandle) onUpdateInstagramHandle('1210.bhavesh');
+                        } else {
+                          onToggleInstagramFollower(false);
+                        }
+                      }}
+                      className={`px-3 py-1.5 text-[11px] font-semibold rounded transition-colors whitespace-nowrap cursor-pointer ${
+                        isInstagramFollower
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-gradient-to-r from-[#E1306C] to-[#E26421] text-white hover:opacity-95'
+                      }`}
+                    >
+                      {isInstagramFollower ? '✓ 10% Applied' : 'Follow & Get 10%'}
+                    </button>
+                  </div>
+                  {isInstagramFollower && (
+                    <div className="mt-2 pt-2 border-t border-[#232934] flex items-center justify-between text-[11px] text-emerald-400">
+                      <span>Handle: @{instagramHandle.replace(/^@/, '') || '1210.bhavesh'}</span>
+                      <button
+                        onClick={onClose}
+                        className="underline text-[#D3DBE8] hover:text-white"
+                      >
+                        Return to Menu
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 {/* Ingredients Breakdown */}
                 {dish.ingredients && dish.ingredients.length > 0 && (
                   <div className="mb-4">
@@ -216,6 +275,28 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
                   </div>
                 </div>
 
+                {/* Pricing summary */}
+                <div className="flex items-baseline justify-between text-xs pt-1">
+                  <span className="text-[#8A95A5]">Price Breakdown:</span>
+                  <div className="text-right">
+                    {isInstagramFollower ? (
+                      <div className="flex items-center gap-2">
+                        <span className="line-through text-[#6B7788] tabular-nums">
+                          {restaurantInfo.currencySymbol}{rawPrice.toFixed(2)}
+                        </span>
+                        <span className="font-serif text-lg font-bold text-emerald-400 tabular-nums">
+                          {restaurantInfo.currencySymbol}{payablePrice.toFixed(2)}
+                        </span>
+                        <span className="text-[10px] text-emerald-400 font-semibold">(10% Off)</span>
+                      </div>
+                    ) : (
+                      <span className="font-serif text-lg font-bold text-[#F6F2E9] tabular-nums">
+                        {restaurantInfo.currencySymbol}{rawPrice.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
                 {/* Buttons */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                   <button
@@ -229,12 +310,12 @@ export const DishDetailModal: React.FC<DishDetailModalProps> = ({
                     {justAdded ? (
                       <>
                         <Check className="w-4 h-4" />
-                        <span>Added</span>
+                        <span>Added to Bag</span>
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="w-4 h-4" />
-                        <span>Add · {restaurantInfo.currencySymbol}{totalPrice.toFixed(2)}</span>
+                        <span>Add · {restaurantInfo.currencySymbol}{payablePrice.toFixed(2)}</span>
                       </>
                     )}
                   </button>

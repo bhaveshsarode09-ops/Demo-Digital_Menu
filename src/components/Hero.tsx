@@ -16,12 +16,9 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
   return (
     <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden bg-gradient-to-b from-[#0A0C0F] via-[#0E1116] to-[#0A0C0F]">
-      {/* Subtle atmospheric ambient glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[340px] sm:w-[600px] h-[340px] sm:h-[600px] bg-[#E26421]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-[280px] h-[280px] bg-[#C29E65]/10 rounded-full blur-[120px] pointer-events-none" />
-
-      {/* Subtle architectural luxury grid lines */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#171B2215_1px,transparent_1px),linear-gradient(to_bottom,#171B2215_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+      {/* Subtle atmospheric ambient glow via lightweight hardware-accelerated radial gradients */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(226,100,33,0.08),transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(194,158,101,0.06),transparent_50%)] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -105,7 +102,7 @@ export const Hero: React.FC<HeroProps> = ({
                 </div>
 
                 {/* Floating Product Specification Card 1 */}
-                <div className="absolute -top-3 -right-2 sm:right-2 bg-[#12151B]/95 border border-[#C29E65]/40 backdrop-blur-md px-3.5 py-2 rounded-lg shadow-xl text-left pointer-events-none animate-[bounce_4s_ease-in-out_infinite]">
+                <div className="absolute -top-3 -right-2 sm:right-2 bg-[#12151B] border border-[#C29E65]/40 px-3.5 py-2 rounded-lg shadow-2xl text-left pointer-events-none animate-[bounce_4s_ease-in-out_infinite]">
                   <p className="text-[10px] uppercase tracking-wider text-[#C29E65] font-semibold flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3" />
                     <span>Chef's Choice</span>
@@ -114,7 +111,7 @@ export const Hero: React.FC<HeroProps> = ({
                 </div>
 
                 {/* Floating Product Specification Card 2 */}
-                <div className="absolute -bottom-2 -left-2 sm:left-2 bg-[#12151B]/95 border border-[#232934] backdrop-blur-md px-3.5 py-2 rounded-lg shadow-xl text-left pointer-events-none">
+                <div className="absolute -bottom-2 -left-2 sm:left-2 bg-[#12151B] border border-[#232934] px-3.5 py-2 rounded-lg shadow-2xl text-left pointer-events-none">
                   <p className="text-[10px] uppercase tracking-wider text-[#8A95A5] font-medium">Preparation</p>
                   <p className="text-xs text-[#E26421] font-semibold tabular-nums">48h Slow Reduction · £24.50</p>
                 </div>
